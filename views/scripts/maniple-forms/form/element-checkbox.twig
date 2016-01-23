@@ -1,0 +1,68 @@
+{% extends 'maniple-forms/form/element.twig' %}
+
+{% block element %}
+    {% set classes = classNames({
+        'form-group': true,
+        'form-control-required': elemIsRequired,
+        'has-error': elem.hasErrors() or elemOther.hasErrors(),
+        'options-horizontal': horizontalOptions,
+    }) %}
+    {% set containerId = 'element--' ~ random() %}
+    <div class="{{ classes }}" id="{{ containerId }}">
+        {{ block('label') }}
+
+        {{ block('description') }}
+
+        {% block input %}
+            <div class="element-options">
+                {% for value, label in elem.getMultiOptions() %}
+                    {% set id = elem.getId() ~ '-option-' ~ value %}
+                    {% if value == 'other' and elemOther %}
+                        <div class="option-wrapper clearfix" style="margin-top: 6px">
+                            <div class="pull-left">
+                                <input id="{{ id }}" type="checkbox" name="{{ elem.getFullyQualifiedName() }}" value="{{ value }}" {% if ('' ~ value) == ('' ~ elem.value) %}checked{% endif %}/>
+                                <label for="{{ id }}" class="option-label">{{ label }}</label>
+                            </div>
+                            <div class="pull-left" style="margin-left: 10px;margin-top: -5px;">
+                                {% set elemOtherId = id ~ '-input' %}
+                                {{ elemOther.setAttribs({id: elemOtherId, class: 'form-control disabled', style: 'display:inline-block;width:250px'}).renderViewHelper() | raw }}
+                                {%- if elemOther.hasErrors() -%}
+                                    <div>
+                                        <div class="control-errors">
+                                            {{ elemOther.renderErrors() | raw }}
+                                        </div>
+                                    </div>
+                                {%- endif -%}
+                            </div>
+                        </div>
+                        <script>jQuery(function ($) {
+                                var input = $('#{{ elemOtherId }}');
+                                function toggleOtherField() {
+                                    if ($('#{{ id }}[value="other"]').is(':checked')) {
+                                        input.removeClass('disabled');
+                                    } else {
+                                        input.addClass('disabled');
+                                    }
+                                }
+                                input.each(function () {
+                                    $(this.form).on('change', toggleOtherField);
+                                });
+                                input.on('focus', function () {
+                                    $('#{{ id }}[value="other"]').prop('checked', true);
+                                    input.removeClass('disabled');
+                                });
+                                toggleOtherField();
+                            });</script>
+                    {% else %}
+                        <div class="option-wrapper">
+                            <input id="{{ id }}" type="checkbox" name="{{ elem.getFullyQualifiedName() }}" value="{{ value }}" {% if ('' ~ value) == ('' ~ elem.value) %}checked{% endif %}/>
+                            <label for="{{ id }}" class="option-label">{{ label }}</label>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endblock %}
+
+        {{ block('errors') }}
+    </div>
+{% endblock %}

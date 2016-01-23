@@ -1,0 +1,37 @@
+{# requires elem variable to be provided #}
+{% do elem.setAttrib('class', 'form-control') %}
+{% block element %}
+{% set classes = classNames({
+    'form-group': true,
+    'form-control-required': elemIsRequired,
+    'has-error': elem.hasErrors(),
+}) %}
+<div class="{{ classes }}">
+    {% block label %}
+        <label for="{{ elem.getId() }}" class="control-label">{{ elem.getLabel() | raw }}</label>
+    {% endblock %}
+
+    {% block description %}
+        {%- if elem.getDescription() -%}
+            <p class="form-help-block help-block">{{ elem.getDescription() | raw }}</p>
+        {%- endif -%}
+    {% endblock %}
+
+    {% block input %}
+        {% if 'textarea' in elem.type|lower %}
+            {% do elem.setAttrib('rows', 4) %}
+            {% do elem.setAttrib('style', 'display:block;width:95%;min-width:95%;' ~ elem.getAttrib('style')) %}
+        {% endif %}
+        {{- elem.renderViewHelper() | raw -}}
+    {% endblock %}
+
+    {% block errors %}
+        {%- if elem.hasErrors() -%}
+            <div class="control-errors">
+            {{ elem.renderErrors() | raw }}
+            </div>
+        {%- endif -%}
+    {% endblock %}
+
+</div>
+{% endblock %}

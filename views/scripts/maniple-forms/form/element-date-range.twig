@@ -1,0 +1,48 @@
+{% set id="element--" ~ random() %}
+<div id="{{ id }}" class="form-group{% if elemStart.hasErrors() or elemEnd.hasErrors() %} has-error{% endif %}">
+    <label for="form-start-date"{% if elemStart.isRequired() or elemEnd.isRequired() %} class="required"{% endif %}>
+        {{- 'Please select the dates of your stay at the hotel' -}}
+    </label>
+    <div>
+        <div class="input-group">
+            {{ formInput(elemStart, {
+                type: 'text',
+                class: 'form-control',
+                placeholder: 'YYYY-MM-DD',
+                style: 'margin:0;width:10em;display:inline-block',
+            }) | raw }}
+            <label for="form-end-date" class="input-group-divider" style="display:inline">&ndash;</label>
+            {{ formInput(elemEnd, {
+                type: 'text',
+                class: 'form-control',
+                placeholder: 'YYYY-MM-DD',
+                style: 'margin:0;width:10em;display:inline-block',
+            }) | raw }}
+        </div>
+    </div>
+    {% if elemStart.hasErrors() or elemEnd.hasErrors() %}
+    <div class="control-errors">
+        {{ elemStart.renderErrors() | raw }}
+        {{ elemEnd.renderErrors() | raw }}
+    </div>
+    {% endif %}
+</div><!-- /form-group -->
+
+<script>var __define = window.define;window.define = null;</script>
+<script src="{{ baseUrl('bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
+<script>
+    window.define = __define;
+    $(function ($) {
+        $('#{{ id }}').each(function () {
+            var $this = $(this);
+            $this.datepicker({
+                format: 'yyyy-mm-dd',
+                orientation: 'bottom left',
+                inputs: $this.find('[name="{{ elemStart.fullyQualifiedName }}"], [name="{{ elemEnd.fullyQualifiedName }}"]').toArray(),
+                startDate: "{{ startDate }}",
+                endDate: "{{ endDate }}"
+            });
+        });
+        $('<link type="text/css" rel="stylesheet" href="{{ baseUrl('bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.standalone.min.css') }}" />').appendTo('head');
+    });
+</script>

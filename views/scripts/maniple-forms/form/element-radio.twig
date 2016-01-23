@@ -1,0 +1,105 @@
+{% extends 'maniple-forms/form/element.twig' %}
+
+{% block element %}
+{% set classes = classNames({
+    'form-group': true,
+    'form-control-required': elemIsRequired,
+    'has-error': elem.hasErrors() or elemOther.hasErrors(),
+    'options-horizontal': horizontalOptions,
+}) %}
+{% set containerId = 'element--' ~ random() %}
+<div class="{{ classes }}" id="{{ containerId }}">
+    {{ block('label') }}
+
+    {{ block('description') }}
+
+    {% block input %}
+    <div class="element-options">
+        {% for value, label in elem.getMultiOptions() %}
+            {% set id = elem.getId() ~ '-option-' ~ value %}
+            {% if value == 'other' and elemOther %}
+                <div class="option-wrapper clearfix" style="margin-top: 6px">
+                    <div class="pull-left">
+                        <input id="{{ id }}" type="radio" name="{{ elem.getFullyQualifiedName() }}" value="{{ value }}" {% if ('' ~ value) == ('' ~ elem.value) %}checked{% endif %}/>
+                        <label for="{{ id }}" class="option-label">{{ label }}</label>
+                    </div>
+                    <div class="pull-left" style="margin-left: 10px;margin-top: -5px;">
+                        {% set elemOtherId = id ~ '-input' %}
+                        {{ elemOther.setAttribs({id: elemOtherId, class: 'form-control disabled', style: 'display:inline-block;width:250px'}).renderViewHelper() | raw }}
+                        {%- if elemOther.hasErrors() -%}
+                            <div>
+                            <div class="control-errors">
+                                {{ elemOther.renderErrors() | raw }}
+                            </div>
+                            </div>
+                        {%- endif -%}
+                    </div>
+                </div>
+                <script>jQuery(function ($) {
+                    var input = $('#{{ elemOtherId }}');
+                    function toggleOtherField() {
+                        if ($('#{{ id }}[value="other"]').is(':checked')) {
+                            input.removeClass('disabled');
+                        } else {
+                            input.addClass('disabled');
+                        }
+                    }
+                    input.each(function () {
+                        $(this.form).on('change', toggleOtherField);
+                    });
+                    input.on('focus', function () {
+                        $('#{{ id }}[value="other"]').prop('checked', true);
+                        input.removeClass('disabled');
+                    });
+                    toggleOtherField();
+                });</script>
+            {% else %}
+                <div class="option-wrapper">
+                    <input id="{{ id }}" type="radio" name="{{ elem.getFullyQualifiedName() }}" value="{{ value }}" {% if ('' ~ value) == ('' ~ elem.value) %}checked{% endif %}/>
+                    <label for="{{ id }}" class="option-label">{{ label }}</label>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% if form %}
+
+        <div class="option-panes" id="option-panes">
+            {% for value, label in elem.getMultiOptions() %}
+            {% set subform = form.getSubForm(elem.getName() ~ '_' ~ value) %}
+            {% if subform %}
+                <div data-role="toggleable-pane" data-trigger-value="{{ value }}" data-container="{{ containerId }}">
+                    {% include 'mod-workshop/form/' ~  elem.getName() ~ '_' ~ value ~ '.twig' with {form: subform} %}
+                </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <script>
+            jQuery(function ($) {
+                var c = $('#{{ containerId }}');
+
+                // match only panes belonging directly to this container,
+                // not to subcontainers
+                c.find('[data-role="toggleable-pane"][data-container="{{ containerId }}"]').hide();
+
+                c.on('click', '> .element-options input[type="radio"]', function () {
+                    console.log('click')
+                    var value = $(this).prop('value');
+                    var panes = c.find('[data-role="toggleable-pane"][data-container="{{ containerId }}"]');
+                    panes.filter(':not([data-trigger-value="' + value + '"])').stop().slideUp();
+                    panes.filter('[data-trigger-value="' + value + '"]').stop().slideDown();
+                });
+
+                c.find('> .element-options input[type="radio"]:checked').each(function () {
+                    var value = $(this).prop('value');
+                    var panes = c.find('[data-role="toggleable-pane"][data-container="{{ containerId }}"]');
+                    panes.filter(':not([data-trigger-value="' + value + '"])').hide();
+                    panes.filter('[data-trigger-value="' + value + '"]').show();
+                });
+            })
+        </script>
+    {% endif %}
+    {% endblock %}
+
+    {{ block('errors') }}
+</div>
+{% endblock %}

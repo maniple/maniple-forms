@@ -1,0 +1,19 @@
+{
+  "name": "maniple-forms",
+  "homepage": "https://github.com/maniple/maniple-forms",
+  "authors": [
+    "xemlock <xemlock@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "file-upload-js": "https://github.com/xemlock/file-upload-js.git",
+    "bootstrap-datepicker": "~1.5.1"
+  }
+}

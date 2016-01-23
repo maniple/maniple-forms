@@ -1,0 +1,80 @@
+<div style="position: relative">
+    <input type="file" name="{{ uploadKey }}" />
+    <button type="button" id="upload-button" class="btn btn-primary">Select file</button>
+</div>
+<script src="{{ baseUrl('bower_components/file-upload-js/FileUpload.js') }}"></script>
+<script>
+(function (FileUpload) {
+    jQuery(function ($) {
+        var fileInput = $('[name="{{ uploadKey }}"]');
+        $('body').on('change', '[name="{{ uploadKey }}"]', function () {
+            var elem = $(this);
+            var btn = $('#upload-button');
+            btn.addClass('loading').attr('disabled', true);
+
+            fileInput = $('<input type="file" />');
+            fileInput.attr('name', elem.attr('name'));
+            fileInput.insertBefore(elem);
+            fileInput.hover(function () {
+                $('#upload-button').addClass('active');
+            }, function () {
+                $('#upload-button').removeClass('active');
+            });
+
+            var upload = new FileUpload.FileInputUpload(this, "{{ uploadUrl }}");
+            upload.on('success', function (response) {
+                if (typeof response === 'string') {
+                    response = $.parseJSON(response);
+                }
+                if (response.error) {
+                    alert(response.error);
+                    return;
+                }
+                if (response.upload_id) {
+                    $('[name="upload_id"]').val(response.upload_id);
+                    $('#upload-name').text(response.filename);
+                }
+            });
+            upload.on('error', function (response) {
+                if (typeof response === 'string') {
+                    response = $.parseJSON(response);
+                }
+                if (response.error) {
+                    alert(response.error);
+                    return;
+                }
+            })
+            upload.on('complete', function () {
+                btn.removeClass('loading').attr('disabled', false);
+
+                upload = null;
+            });
+            upload.send();
+        });
+
+        fileInput.hover(function () {
+            $('#upload-button').addClass('active');
+        }, function () {
+            $('#upload-button').removeClass('active');
+        });
+
+        // mimic element and position of upload-button
+        var domChangeListener = function () {
+            var offset = $('#upload-button').position();
+            fileInput.css({
+                position: 'absolute',
+                left: offset.left,
+                top: offset.top,
+                width: $('#upload-button').outerWidth(),
+                height: $('#upload-button').outerHeight(),
+                zIndex: 10, // .btn.active has z-index:2
+                opacity: 0.01,
+                display: 'block',
+                cursor: 'pointer'
+            });
+        }
+
+        setInterval(domChangeListener, 500);
+    });
+})(FileUpload);
+</script>
