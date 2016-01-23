@@ -35,10 +35,12 @@
     $(function ($) {
         $('#{{ id }}').each(function () {
             var $this = $(this);
+            var $inputs = $this.find('[name="{{ elemStart.fullyQualifiedName }}"], [name="{{ elemEnd.fullyQualifiedName }}"]');
             $this.datepicker({
                 format: 'yyyy-mm-dd',
                 orientation: 'bottom left',
-                inputs: $this.find('[name="{{ elemStart.fullyQualifiedName }}"], [name="{{ elemEnd.fullyQualifiedName }}"]').toArray(),
+                weekStart: 1, // Monday
+                inputs: $inputs.get(),
                 startDate: "{{ startDate }}",
                 endDate: "{{ endDate }}"
             });
