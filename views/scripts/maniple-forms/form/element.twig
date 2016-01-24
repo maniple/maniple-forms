@@ -22,13 +22,13 @@
             {% do elem.setAttrib('rows', 4) %}
             {% do elem.setAttrib('style', 'display:block;width:95%;min-width:95%;' ~ elem.getAttrib('style')) %}
         {% endif %}
-        {{- elem.renderViewHelper() | raw -}}
+        {{ decorate(elem, 'viewHelper') | raw }}
     {% endblock %}
 
     {% block errors %}
         {%- if elem.hasErrors() -%}
             <div class="control-errors">
-            {{ elem.renderErrors() | raw }}
+            {{ decorate(elem, 'errors') | raw }}
             </div>
         {%- endif -%}
     {% endblock %}
