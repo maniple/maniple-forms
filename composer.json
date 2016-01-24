@@ -10,6 +10,7 @@
     ],
     "require": {
         "xemlock/zefram-composer-installer": "*",
-        "xemlock/zefram": "*"
+        "xemlock/zefram": "*",
+        "maniple/maniple-core": "*"
     }
 }

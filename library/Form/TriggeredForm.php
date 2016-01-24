@@ -4,7 +4,7 @@
  * This is particularly helpful if some parts of the form are enabled depending
  * on a value of a selected input.
  */
-class ManipleForms_Form_TriggeredForm extends Zend_Form
+class ManipleForms_Form_TriggeredForm extends Zefram_Form2
 {
     /**
      * @var Zend_Form
@@ -135,7 +135,7 @@ class ManipleForms_Form_TriggeredForm extends Zend_Form
         return array();
     }
 
-    public function isValidPartial(array $data)
+    public function isValidPartial(array $data = null)
     {
         if ($this->isTriggered()) {
             return parent::isValidPartial($data);
