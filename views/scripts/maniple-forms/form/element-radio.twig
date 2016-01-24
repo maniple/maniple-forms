@@ -3,7 +3,7 @@
 {% block element %}
 {% set classes = classNames({
     'form-group': true,
-    'form-control-required': elemIsRequired,
+    'form-control-required': elemIsRequired or elem.isRequired(),
     'has-error': elem.hasErrors() or elemOther.hasErrors(),
     'options-horizontal': horizontalOptions,
 }) %}
@@ -69,7 +69,7 @@
             {% set subform = form.getSubForm(elem.getName() ~ '_' ~ value) %}
             {% if subform %}
                 <div data-role="toggleable-pane" data-trigger-value="{{ value }}" data-container="{{ containerId }}">
-                    {% include 'mod-workshop/form/' ~  elem.getName() ~ '_' ~ value ~ '.twig' with {form: subform} %}
+                    {% include templatePath ~ '/' ~  elem.getName() ~ '_' ~ value ~ '.twig' with {form: subform} %}
                 </div>
             {% endif %}
             {% endfor %}

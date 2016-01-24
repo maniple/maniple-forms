@@ -3,7 +3,7 @@
 {% block element %}
 {% set classes = classNames({
     'form-group': true,
-    'form-control-required': elemIsRequired,
+    'form-control-required': elemIsRequired or elem.isRequired(),
     'has-error': elem.hasErrors(),
 }) %}
 <div class="{{ classes }}">
