@@ -20,7 +20,7 @@
                     {% if value == 'other' and elemOther %}
                         <div class="option-wrapper clearfix" style="margin-top: 6px">
                             <div class="pull-left">
-                                <input id="{{ id }}" type="checkbox" name="{{ elem.getFullyQualifiedName() }}" value="{{ value }}" {% if ('' ~ value) == ('' ~ elem.value) %}checked{% endif %}/>
+                                <input id="{{ id }}" type="checkbox" name="{{ elem.getFullyQualifiedName() }}" value="{{ value }}" {% if value in elem.value %}checked{% endif %}/>
                                 <label for="{{ id }}" class="option-label">{{ label }}</label>
                             </div>
                             <div class="pull-left" style="margin-left: 10px;margin-top: -5px;">
@@ -55,7 +55,7 @@
                             });</script>
                     {% else %}
                         <div class="option-wrapper">
-                            <input id="{{ id }}" type="checkbox" name="{{ elem.getFullyQualifiedName() }}" value="{{ value }}" {% if ('' ~ value) == ('' ~ elem.value) %}checked{% endif %}/>
+                            <input id="{{ id }}" type="checkbox" name="{{ elem.getFullyQualifiedName() }}" value="{{ value }}" {% if value in elem.value %}checked{% endif %}/>
                             <label for="{{ id }}" class="option-label">{{ label }}</label>
                         </div>
                     {% endif %}
