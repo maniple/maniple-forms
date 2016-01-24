@@ -44,6 +44,71 @@
                 startDate: "{{ startDate }}",
                 endDate: "{{ endDate }}"
             });
+
+            // Override inability to disable auto-fill of the other end of date range.
+            // A fix was proposed on 15 Oct 2015, but so far it didn't made it to release,
+            // see: https://github.com/eternicode/bootstrap-datepicker/issues/1618
+            // The code below overrides this limitation by overriding input values
+            // using event handlers.
+            var DATA_KEY = 'datepicker.disableAutoFill';
+
+            function _getData($elem) {
+                var data = $elem.data(DATA_KEY);
+                if (!data) {
+                    $elem.data(DATA_KEY, data = {});
+                }
+                return data;
+            }
+
+            $inputs.each(function () {
+                // remember initial input value
+                var $input = $(this);
+                _getData($input).prevValue = $.trim($input.val());
+            }).on('focus', function () {
+                // when input is focused assume that datepicker is shown.
+                // Mark this input as active, i.e. its value is connected
+                // with datepicker.
+                _getData($(this)).isActive = true;
+            }).on('change', function () {
+                // at this point DateRangePicker.dateUpdated() ensured that
+                // all range inputs contain a valid date, if not they are auto-filled.
+                // This is undesired, if we want to leave input empty. So here
+                // we detects if the input was previously empty, and its modification
+                // is not made by the user (input was not focused)
+                $inputs.each(function () {
+                    var $input = $(this);
+                    var data = _getData($input);
+                    if (!data.isActive && data.prevValue === '') {
+                        // this input is not active, and its value was previously empty,
+                        // which means that its value must not be auto-filled, as it is
+                        // not explicitly set by user
+                        data.keepEmpty = true;
+                        $input.val('');
+                    } else if (data.keepEmpty) {
+                        // change triggered by another input, honor keepEmpty flag
+                        // set earlier
+                        $input.val('');
+                    }
+                });
+            });
+
+            $this.datepicker().on('hide', function () {
+                // before 'hide' is triggered, inputs are refreshed using
+                // stored range dates. We need to restore emptiness of inputs
+                // marked with keepEmpty flag
+                $inputs.each(function () {
+                    var $input = $(this);
+                    var data = _getData($input);
+
+                    if (data.keepEmpty) {
+                        $input.val('');
+                    }
+
+                    data.prevValue = $.trim($input.val());
+                    delete data.keepEmpty;
+                    delete data.isActive;
+                });
+            });
         });
         $('<link type="text/css" rel="stylesheet" href="{{ baseUrl('bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.standalone.min.css') }}" />').appendTo('head');
     });

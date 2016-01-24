@@ -83,7 +83,6 @@
                 c.find('[data-role="toggleable-pane"][data-container="{{ containerId }}"]').hide();
 
                 c.on('click', '> .element-options input[type="radio"]', function () {
-                    console.log('click')
                     var value = $(this).prop('value');
                     var panes = c.find('[data-role="toggleable-pane"][data-container="{{ containerId }}"]');
                     panes.filter(':not([data-trigger-value="' + value + '"])').stop().slideUp();
