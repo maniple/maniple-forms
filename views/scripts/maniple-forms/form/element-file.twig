@@ -32,7 +32,7 @@
                 }
                 if (response.upload_id) {
                     $('[name="upload_id"]').val(response.upload_id);
-                    $('#upload-name').text(response.filename);
+                    $('{{ fileNameSelector }}').text(response.filename);
                 }
             });
             upload.on('error', function (response) {
