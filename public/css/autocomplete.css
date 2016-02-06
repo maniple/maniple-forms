@@ -1,0 +1,41 @@
+.ui-helper-hidden-accessible {
+    display: none;
+}
+
+.ui-autocomplete {
+    list-style: none;
+    background-color: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    margin-top: 6px;
+    padding: 4px 0;
+    position: absolute; /* if not viden explicitly jquery-ui will set
+                         position:relative */
+}
+.ui-autocomplete .ui-menu-item a {
+    line-height: 20px;
+    padding: 3px 20px;
+    white-space: nowrap;
+    text-decoration: none;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ui-autocomplete .ui-menu-item a:hover,
+.ui-autocomplete .ui-menu-item a.ui-state-hover,
+.ui-autocomplete .ui-menu-item a.ui-state-focus {
+    background-color: #0081C2;
+    background-image: linear-gradient(to bottom, #0088CC, #0077B3);
+    background-repeat: repeat-x;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+input[type="text"].ui-autocomplete-input.ui-autocomplete-loading {
+    background-image: url('../img/ac.gif');
+    background-position: 100% 50%;
+    background-repeat: no-repeat;
+}
+input[type="text"].ui-autocomplete-input::-ms-clear {
+    display: none;
+}

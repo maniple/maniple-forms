@@ -1,0 +1,4 @@
+{% do headScript().appendFile(baseUrl('modules/maniple-forms/js/country-select.js')) %}
+{% do headLink().appendStylesheet(baseUrl('modules/maniple-forms/css/autocomplete.css')) %}
+{% include 'maniple-forms/form/element.twig' %}
+<script>jQuery(function(){countrySelect('#{{ elem.getId() }}')})</script>
