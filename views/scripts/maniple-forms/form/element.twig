@@ -19,8 +19,10 @@
 
     {% block input %}
         {% if 'textarea' in elem.type|lower %}
-            {% do elem.setAttrib('rows', 4) %}
-            {% do elem.setAttrib('style', 'display:block;width:95%;min-width:95%;' ~ elem.getAttrib('style')) %}
+            {%- if not elem.getAttrib('rows') -%}
+                {%- do elem.setAttrib('rows', 4) -%}
+            {%- endif -%}
+            {%- do elem.setAttrib('style', 'display:block;width:95%;min-width:95%;' ~ elem.getAttrib('style')) -%}
         {% endif %}
         {{ decorate(elem, 'viewHelper') | raw }}
     {% endblock %}
